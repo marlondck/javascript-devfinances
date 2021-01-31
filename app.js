@@ -4,6 +4,9 @@ const form = document.querySelector('#form');
 const buttonNewTrasaction = document.querySelector('.new')
 const buttonCancel = document.querySelector('.cancel');
 const dataTable = document.querySelector('#data-table tbody')
+const displayIncome = document.querySelector('#incomeDisplay')
+const displayExpense = document.querySelector('#expenseDisplay')
+const displayTotal = document.querySelector('#totalDisplay')
 
 
 // 2 - Objet with methods
@@ -36,17 +39,31 @@ const transactions = [
 ]
 
 const transactionObj = {
+  all: transactions,
   // somar as entradas
   incomes() {
-
+    let income = 0
+    this.all.forEach(transaction => {
+      if(transaction.amount > 0) {
+        income += transaction.amount
+      }
+    })
+    return income
   },
   // somar as saidas
   expenses() {
-    
+    let expense = 0
+    this.all.forEach(transaction => {
+      if(transaction.amount < 0) {
+        expense += transaction.amount
+      }
+    })
+    return expense
   },
   // mostrar total (entradas - saidas)
-  total() {}
-
+  total() {
+    return transactionObj.incomes() + transactionObj.expenses()
+  }
 }
 
 
@@ -74,8 +91,14 @@ const renderDom = {
       </td>
     `
     return html
+  },
+  updateBalance() {
+    displayIncome.innerHTML = utils.formatCurrency(transactionObj.incomes())
+    displayExpense.innerHTML = utils.formatCurrency(transactionObj.expenses())
+    displayTotal.innerHTML = utils.formatCurrency(transactionObj.total())
   }
 }
+
 // Utils to use 
 const utils = {
   // format value pattern brasil
@@ -100,6 +123,9 @@ const utils = {
 transactions.forEach(transaction => {
   renderDom.addTransaction(transaction)
 })
+
+// render values in cards
+renderDom.updateBalance()
 
 // 3- Event Listeners
 buttonNewTrasaction.addEventListener('click', () => {
