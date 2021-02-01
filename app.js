@@ -21,19 +21,16 @@ const modalObj = {
 // content object
 const transactions = [
   {
-    id: 1,
     description: 'Luz',
     amount: -50000,
     date: '23/01/2021'
   },
   {
-    id: 2,
     description: 'Agua',
     amount: -20000,
     date: '23/01/2021'
   },
   {
-    id: 3,
     description: 'Website',
     amount: 80012,
     date: '24/01/2021'
@@ -45,6 +42,10 @@ const transactionObj = {
   all: transactions,
   add(transaction) {
     this.all.push(transaction)
+    app.reaload()
+  },
+  remove(index) {
+    this.all.splice(index, 1)
     app.reaload()
   },
   // somar as entradas
@@ -146,15 +147,6 @@ const app = {
   }
 }
 app.init()
-
-
-// add transactions
-transactionObj.add({
-  id: 9,
-  description: 'teste',
-  amount: 200,
-  date: '31/01/2021'
-})
 
 
 // =============================
