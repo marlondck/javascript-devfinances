@@ -1,3 +1,4 @@
+// =============================
 // 1 - select elements
 const modal = document.querySelector('.modal-overlay');
 const form = document.querySelector('#form');
@@ -9,14 +10,15 @@ const displayExpense = document.querySelector('#expenseDisplay')
 const displayTotal = document.querySelector('#totalDisplay')
 
 
-// 2 - Objet with methods
+// =============================
+// 2 - Populate data and methods
 const modalObj = {
   toggleModal(){
     modal.classList.toggle('active')
   }
 }
 
-// objet content
+// content object
 const transactions = [
   {
     id: 1,
@@ -38,8 +40,13 @@ const transactions = [
   },
 ]
 
+// content methods
 const transactionObj = {
   all: transactions,
+  add(transaction) {
+    this.all.push(transaction)
+    app.reaload()
+  },
   // somar as entradas
   incomes() {
     let income = 0
@@ -67,7 +74,8 @@ const transactionObj = {
 }
 
 
-// 4 - Render content in to DOM
+// =============================
+// 4 - Render 
 const renderDom = {
   // select tbody
   transactionContainer: dataTable,
@@ -96,6 +104,9 @@ const renderDom = {
     displayIncome.innerHTML = utils.formatCurrency(transactionObj.incomes())
     displayExpense.innerHTML = utils.formatCurrency(transactionObj.expenses())
     displayTotal.innerHTML = utils.formatCurrency(transactionObj.total())
+  },
+  clearTransactions() {
+    renderDom.transactionContainer.innerHTML = ''
   }
 }
 
@@ -119,14 +130,34 @@ const utils = {
   }
 }
 
-// 5 for each in objet transictions and to call method render in html
-transactions.forEach(transaction => {
-  renderDom.addTransaction(transaction)
+
+// =============================
+// 5 - Initialze app
+const app = {
+  init() {
+    transactionObj.all.forEach(transaction => {
+      renderDom.addTransaction(transaction)
+    })
+    renderDom.updateBalance()
+  },
+  reaload() {
+    renderDom.clearTransactions()
+    app.init()
+  }
+}
+app.init()
+
+
+// add transactions
+transactionObj.add({
+  id: 9,
+  description: 'teste',
+  amount: 200,
+  date: '31/01/2021'
 })
 
-// render values in cards
-renderDom.updateBalance()
 
+// =============================
 // 3- Event Listeners
 buttonNewTrasaction.addEventListener('click', () => {
   modalObj.toggleModal();
