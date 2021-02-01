@@ -84,19 +84,20 @@ const renderDom = {
     // create tr
     const tr = document.createElement('tr')
     // insert content inner tr
-    tr.innerHTML = this.innerHTMLTransaction(transaction)
+    tr.innerHTML = this.innerHTMLTransaction(transaction, index)
+    tr.dataset.index = index
     this.transactionContainer.appendChild(tr)
   },
   // content to tr
-  innerHTMLTransaction(transaction) {
+  innerHTMLTransaction(transaction, index) {
     const cssClass = transaction.amount > 0 ? 'income' : 'expense'
     const amount = utils.formatCurrency(transaction.amount)
     const html = `
       <td class="description">${transaction.description}</td>
       <td class="${cssClass}">R$ ${amount}</td>
       <td class="date">${transaction.date}</td>
-      <td id=${transaction.id}>
-        <img src="./assets/minus.svg" alt="Remover transação">
+      <td>
+        <img onClick="transactionObj.remove(${index})" src="./assets/minus.svg" alt="Remover transação">
       </td>
     `
     return html
@@ -146,8 +147,8 @@ const utils = {
 // 6 - Initialze app
 const app = {
   init() {
-    transactionObj.all.forEach(transaction => {
-      renderDom.addTransaction(transaction)
+    transactionObj.all.forEach((transaction, index) => {
+      renderDom.addTransaction(transaction, index)
     })
     renderDom.updateBalance()
   },
@@ -219,3 +220,11 @@ form.addEventListener('submit', (e) => {
     alert(error.message)
   }
 })
+
+
+// dataTable.addEventListener("dblclick", event => {
+//   event.target.parentNode.classList.add("fadeOut");
+//   setTimeout(() => {
+//     event.target.parentNode.remove();
+//   }, 500);
+// });
