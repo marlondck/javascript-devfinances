@@ -8,6 +8,9 @@ const dataTable = document.querySelector('#data-table tbody')
 const displayIncome = document.querySelector('#incomeDisplay')
 const displayExpense = document.querySelector('#expenseDisplay')
 const displayTotal = document.querySelector('#totalDisplay')
+const descritionInput = document.querySelector('input#description')
+const amountInput = document.querySelector('input#amount')
+const dateInput = document.querySelector('input#date')
 
 
 // =============================
@@ -18,28 +21,25 @@ const modalObj = {
   }
 }
 
-// content object
-const transactions = [
-  {
-    description: 'Luz',
-    amount: -50000,
-    date: '23/01/2021'
-  },
-  {
-    description: 'Agua',
-    amount: -20000,
-    date: '23/01/2021'
-  },
-  {
-    description: 'Website',
-    amount: 80012,
-    date: '24/01/2021'
-  },
-]
-
 // content methods
 const transactionObj = {
-  all: transactions,
+  all: [
+    {
+      description: 'Luz',
+      amount: -50000,
+      date: '23/01/2021'
+    },
+    {
+      description: 'Agua',
+      amount: -20000,
+      date: '23/01/2021'
+    },
+    {
+      description: 'Website',
+      amount: 80012,
+      date: '24/01/2021'
+    },
+  ],
   add(transaction) {
     this.all.push(transaction)
     app.reaload()
@@ -128,12 +128,22 @@ const utils = {
     })
 
     return signal + value
+  },
+  formatAmount(value) {
+    value = Number(value) * 100
+    // other method
+    // value = Number(value.replate(/\,\,/g, ''))
+    return value
+  },
+  formatDate(date) {
+    const [year, day, mounth] = date.split('-')
+    return `${day}/${mounth}/${year}`
   }
 }
 
 
 // =============================
-// 5 - Initialze app
+// 6 - Initialze app
 const app = {
   init() {
     transactionObj.all.forEach(transaction => {
@@ -159,6 +169,53 @@ buttonCancel.addEventListener('click', () => {
   modalObj.toggleModal()
 })
 
+const getValues = () => {
+  return {
+    description: descritionInput.value,
+    amount: amountInput.value,
+    date: dateInput.value
+  }
+}
+
+const formatValues = () => {
+  let { description, amount, date } = getValues()
+  amount = utils.formatAmount(amount)
+  date = utils.formatDate(date)
+  return {
+    description,
+    amount,
+    date
+  }
+}
+
+const validateFields = () => {
+  const { description, amount, date } = getValues()
+
+  if(description.trim() === '' || amount.trim() === '' || date.trim === '') {
+    throw new Error('Por favor, preencha todos os campos')
+  }
+}
+
+const saveTransaction = (newTransaction) => {
+  transactionObj.add(newTransaction)
+}
+
+const clearFields = () => {
+  descritionInput.value = '',
+  amountInput.value = '',
+  dateInput.value = ''
+}
+
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  
+  try {
+    validateFields()
+    const newTransaction = formatValues()
+    saveTransaction(newTransaction)
+    clearFields()
+    modalObj.toggleModal();
+  } catch (error) {
+    alert(error.message)
+  }
 })
