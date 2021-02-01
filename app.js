@@ -21,25 +21,18 @@ const modalObj = {
   }
 }
 
+const storage = {
+  get() {
+    return JSON.parse(localStorage.getItem('dev.finances')) || []
+  },
+  set(transactions) {
+    localStorage.setItem('dev.finances', JSON.stringify(transactions))
+  }
+}
+
 // content methods
 const transactionObj = {
-  all: [
-    {
-      description: 'Luz',
-      amount: -50000,
-      date: '23/01/2021'
-    },
-    {
-      description: 'Agua',
-      amount: -20000,
-      date: '23/01/2021'
-    },
-    {
-      description: 'Website',
-      amount: 80012,
-      date: '24/01/2021'
-    },
-  ],
+  all: storage.get(),
   add(transaction) {
     this.all.push(transaction)
     app.reaload()
@@ -151,6 +144,8 @@ const app = {
       renderDom.addTransaction(transaction, index)
     })
     renderDom.updateBalance()
+
+    storage.set(transactionObj.all)
   },
   reaload() {
     renderDom.clearTransactions()
