@@ -185,6 +185,11 @@ table tbody td {
   font-weight: normal;
 }
 
+table tbody td img {
+  max-height: 1.5rem;
+  display: flex;
+}
+
 /* Arredondar bordas da tabela */
 table thead tr th:first-child,
 table tbody tr td:first-child {
