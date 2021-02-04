@@ -126,8 +126,11 @@ const utils = {
   formatAmount(value) {
     value = Number(value) * 100
     // other method
-    // value = Number(value.replate(/\,\,/g, ''))
-    return value
+    // value = Number(value.replate(/\,?\,?/g, ''))
+    // O input [type=number] já traz em formato numero, entretando o value * 100
+    // em alguns numeros como o.56 traz o resultado de 56.000.000....
+    // por este motivo usa-se Math.round()
+    return Math.round(value)
   },
   formatDate(date) {
     const [year, day, mounth] = date.split('-')
